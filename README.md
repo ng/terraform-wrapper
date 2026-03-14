@@ -74,6 +74,33 @@ your-repo/
     └── tf-pre-apply            # Optional hook (executable, runs before apply)
 ```
 
+## How it works
+
+```mermaid
+flowchart TD
+    A["tf &lt;env&gt; [mode] [args...]"] --> B[Locate repo root]
+    B --> C[Load .tf.conf]
+    C --> D[Load .env secrets]
+    D --> E{AWS profile set?}
+    E -- yes --> F[Check SSO session]
+    F -- expired --> G[aws sso login]
+    G --> H[Validate env + tfvars]
+    F -- valid --> H
+    E -- no --> H
+    H --> I{SKIP_INIT?}
+    I -- no --> J["terraform init -reconfigure"]
+    J --> K[Select/create workspace]
+    I -- yes --> L{Mode = apply?}
+    K --> L
+    L -- yes --> M{Pre-apply hook exists?}
+    M -- yes --> N["tools/tf-pre-apply &lt;env&gt;"]
+    N --> O
+    M -- no --> O["terraform apply -auto-approve"]
+    L -- no --> P["terraform plan / refresh / passthrough"]
+    O --> Q[Show outputs]
+    P --> Q
+```
+
 ## Features
 
 - **SSO auto-login**: Detects expired sessions and triggers `aws sso login`
