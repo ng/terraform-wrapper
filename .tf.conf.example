@@ -1,0 +1,14 @@
+# Project-specific configuration for the tf wrapper.
+# Place this file as .tf.conf in your repo root (next to terraform/).
+
+# AWS CLI profile for SSO authentication
+aws_profile = my-terraform-admin
+
+# Allowed environments (space-separated)
+allowed_envs = dev prod
+
+# S3 bucket for Terraform state (informational, backend.conf is authoritative)
+state_bucket = my-terraform-states
+
+# Default AWS region
+aws_region = us-east-1
