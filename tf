@@ -94,6 +94,7 @@ if [[ -f "${REPO_ROOT}/.env" ]]; then
         value="${value:1:${#value}-2}"
       fi
       printf -v "${key}" '%s' "${value}"
+      # shellcheck disable=SC2163
       export "${key}"
     fi
   done < "${REPO_ROOT}/.env"
